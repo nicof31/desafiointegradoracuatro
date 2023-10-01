@@ -1,0 +1,37 @@
+[
+  {
+    "_id": "07838a11-9808-4d37-9d42-682d54171c99",
+    "email": "postaman@gmail.com",
+    "idUser": "b7cad96a-498d-4fc2-a38f-9f5ee122dfc7",
+    "message": "hola",
+    "timestamp": "2023-08-14T17:48:04.745Z"
+  },
+  {
+    "_id": "6bcd548c-d320-49e0-a9ce-8afee431169a",
+    "email": "postaman@gmail.com",
+    "idUser": "b7cad96a-498d-4fc2-a38f-9f5ee122dfc7",
+    "message": "muy buenos productos",
+    "timestamp": "2023-08-14T17:48:20.694Z"
+  },
+  {
+    "_id": "28be5c02-b229-484d-957e-0e03fc45b055",
+    "email": "nfrugoni31@gmail.com",
+    "idUser": "1b206f27-78f2-4f59-9756-a7e8cdabb1a4",
+    "message": "prueba logueado por github",
+    "timestamp": "2023-08-14T18:16:25.118Z"
+  },
+  {
+    "_id": "8aeaebc4-543e-495d-9704-d324276d940e",
+    "email": "nfrugoni31@gmail.com",
+    "idUser": "1b206f27-78f2-4f59-9756-a7e8cdabb1a4",
+    "message": "prueba github",
+    "timestamp": "2023-08-15T00:08:13.442Z"
+  },
+  {
+    "_id": "fc9bba64-694f-402a-8803-38e6cb975138",
+    "email": "userCoder@coder.com",
+    "idUser": "acd3c2de-1079-4e08-88b9-fa4b072e720d",
+    "message": "prueba user coder",
+    "timestamp": "2023-08-15T00:31:20.902Z"
+  }
+]

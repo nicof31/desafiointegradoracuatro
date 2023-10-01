@@ -1,0 +1,969 @@
+paths:
+  /api/products/{pid}:
+    get:
+      tags:
+        - Products
+      summary: Obtiene un producto por su ID.
+      description: Obtiene un producto específico por su ID.
+      operationId: getProductById
+      parameters:
+        - name: pid
+          in: path
+          description: ID del producto
+          required: true
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Producto obtenido exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Products"
+              examples:
+                success:
+                  value:
+                    status: 200
+                    statusMessage: SUCCESS
+                    data:
+                      product:
+                        - "_id": 2
+                          title: "Producto 2"
+                          description: "creado 2"
+                          code: "# prueba ID 2"
+                          price: 1500
+                          status: true
+                          category: "notebooks"
+                          thumbnail:
+                            - "creado"
+                            - "creado 2"
+                          stock: 994
+                          owner: "64d6918281b7b7f0b2d9369a"
+                          "__v": 0
+        "404":
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                productNotFound:
+                  value:
+                    status: 404
+                    statusMessage: "INVALID PARAMS ERROR - No se pudo obtener product en la base de datos"
+                    data:
+                      error: "Error: ProductService: El _id '50' de producto buscado no existe, cargue un nuevo _id"
+                referenceError:
+                  value:
+                    status: 404
+                    statusMessage: "INVALID PARAMS ERROR - No se pudo obtener product en la base de datos"
+                    data:
+                      error: "ReferenceError: resultBusqC is not defined"
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    statusMessage: "Error del servidor"
+                    data:
+                      error: "ReferenceError: Error del servidor"
+    put:
+      tags:
+        - Products
+      summary: Actualizar un producto
+      description: Actualiza un producto existente con nuevos datos, debe ser un user con permisos "ADMIN" o "PREMIUM".
+      operationId: updateProduct
+      parameters:
+        - name: pid
+          in: path
+          description: ID del producto
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Título del producto
+                  minLength: 1
+                description:
+                  type: string
+                  description: Descripción del producto
+                  minLength: 1
+                code:
+                  type: string
+                  description: Código del producto
+                  minLength: 1
+                price:
+                  type: number
+                  description: Precio del producto
+                  minimum: 0
+                status:
+                  type: boolean
+                  description: Estado del producto
+                category:
+                  type: string
+                  description: Categoría del producto
+                  minLength: 1
+                thumbnail:
+                  type: array
+                  description: Imágenes en miniatura del producto
+                  items:
+                    type: string
+                stock:
+                  type: number
+                  description: Cantidad en stock del producto
+                  minimum: 0
+              required:
+                - title
+                - description
+                - code
+                - price
+                - status
+                - category
+                - stock
+      responses:
+        "201":
+          description: Producto actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Products"
+              examples:
+                success:
+                  value:
+                    status: 201
+                    statusMessage: SUCCESS
+                    data:
+                      payload:
+                        title: "prueba prueba put premium"
+                        description: "modificado por método put REP11---"
+                        code: "# prueba ID REPO-put premium"
+                        price: 100
+                        status: true
+                        category: "notebooks"
+                        thumbnail:
+                          - "modificado put"
+                          - "modificado put "
+                        stock: 100
+                        _id: "11"
+        "400":
+          description: Error de validación
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: array
+                        description: Lista de campos incompletos en el producto
+                        items:
+                          type: string
+              examples:
+                validationError:
+                  value:
+                    status: 400
+                    statusMessage: "VALIDATION ERROR"
+                    data:
+                      error: ["Campos incompletos en el producto"]
+        "404":
+          description: Error al procesar la petición PUT
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                codeExists:
+                  value:
+                    status: 404
+                    statusMessage: "DB ERROR - Error al procesar la petición PUT"
+                    data:
+                      error: "Error: productManager: El código de producto ya existe en la base de datos, asigne un código nuevo"
+                referenceError:
+                  value:
+                    status: 404
+                    statusMessage: "DB ERROR - Error al procesar la petición PUT"
+                    data:
+                      error: "ReferenceError: updateProduct is not defined"
+        "403":
+          description: Error de permisos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: string
+              examples:
+                forbiddenError:
+                  value:
+                    status: 403
+                    statusMessage: "FORBIDDEN ERROR"
+                    data: "Credenciales inválidas"
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    statusMessage: "DError del servidor"
+                    data:
+                      error: "ReferenceError: Error del servidor"
+    patch:
+      tags:
+        - Products
+      summary: Modificar un producto
+      description: Modifica un producto existente con nuevos datos, puede ser un parámetro o todos los parámetros, debe ser un usuario con permisos "ADMIN" o "PREMIUM".
+      operationId: patchProduct
+      parameters:
+        - name: pid
+          in: path
+          description: ID del producto
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Nuevo título del producto
+                  minLength: 1
+                description:
+                  type: string
+                  description: Nueva descripción del producto
+                  minLength: 1
+                code:
+                  type: string
+                  description: Nuevo código del producto
+                  minLength: 1
+                price:
+                  type: number
+                  description: Nuevo precio del producto
+                  minimum: 0
+                status:
+                  type: boolean
+                  description: Nuevo estado del producto
+                category:
+                  type: string
+                  description: Nueva categoría del producto
+                  minLength: 1
+                thumbnail:
+                  type: array
+                  description: Nuevas imágenes en miniatura del producto
+                  items:
+                    type: string
+                stock:
+                  type: number
+                  description: Nueva cantidad en stock del producto
+                  minimum: 0
+      responses:
+        "200":
+          description: Producto modificado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Products"
+              examples:
+                success:
+                  value:
+                    status: 200
+                    statusMessage: SUCCESS
+                    data:
+                      payload:
+                        _id: 11
+                        title: "prueba patch premium"
+                        description: "modificado patch premium---"
+                        code: "# prueba ID patch 11 7-1 "
+                        price: 100
+                        status: true
+                        category: "informatica"
+                        thumbnail:
+                          - "modificado put"
+                          - "modificado patch "
+                        stock: 100
+                        owner: "ADMIN"
+                        __v: 0
+        "403":
+          description: Error de permisos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: string
+              examples:
+                forbiddenError:
+                  value:
+                    status: 403
+                    statusMessage: "FORBIDDEN ERROR"
+                    data: "Credenciales inválidas"
+        "404":
+          description: Error al procesar la petición PATCH
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                idNotFound:
+                  value:
+                    status: 404
+                    statusMessage: "DB ERROR - Error al procesar la petición PATCH"
+                    data:
+                      error: "Error: productManager: El id de producto buscado no existe, cargue un nuevo id"
+                codeExists:
+                  value:
+                    status: 404
+                    statusMessage: "DB ERROR - Error al procesar la petición PATCH"
+                    data:
+                      error: "Error: productManager: El código de producto existe en otro producto, cargue un nuevo código de producto"
+                bodyUndefined:
+                  value:
+                    status: 404
+                    statusMessage: "DB ERROR - Error al procesar la petición PATCH"
+                    data:
+                      error: "TypeError: Cannot read properties of undefined (reading 'body')"
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    statusMessage: "DError del servidor"
+                    data:
+                      error: "ReferenceError: Error del servidor"
+
+    delete:
+      tags:
+        - Products
+      summary: Eliminar un producto
+      description: Elimina un producto existente.
+      operationId: deleteProduct
+      parameters:
+        - name: pid
+          in: path
+          description: ID del producto
+          required: true
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Producto eliminado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: string
+                    description: Mensaje de éxito
+              examples:
+                success:
+                  value:
+                    status: 200
+                    statusMessage: SUCCESS
+                    data: "DELETE realizado exitosamente"
+        "404":
+          description: Error al procesar la petición DELETE
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                idNotFound:
+                  value:
+                    status: 404
+                    statusMessage: "DB ERROR - Error al procesar la petición DELETE"
+                    data:
+                      error: "Error: productManager: El id de producto buscado no existe, cargue un nuevo id"
+                paramsUndefined:
+                  value:
+                    status: 404
+                    statusMessage: "DB ERROR - Error al procesar la petición DELETE"
+                    data:
+                      error: "TypeError: Cannot read properties of undefined (reading 'params')"
+        "403":
+          description: Error de permisos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: string
+              examples:
+                forbiddenError:
+                  value:
+                    status: 403
+                    statusMessage: "FORBIDDEN ERROR"
+                    data: "Credenciales inválidas"
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    statusMessage: "DError del servidor"
+                    data:
+                      error: "ReferenceError: Error del servidor"
+
+  /api/products/:
+    get:
+      tags:
+        - Products
+      summary: Obtener una lista de productos con filtros de búsqueda
+      description: Obtiene una lista de productos con opciones de filtrado y paginación.
+      operationId: getProducts
+      parameters:
+        - name: page
+          in: query
+          description: Número de página para la paginación
+          required: false
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: Límite de resultados por página
+          required: false
+          schema:
+            type: integer
+        - name: sort
+          in: query
+          description: Campo para ordenar los resultados
+          required: false
+          schema:
+            type: string
+        - name: category
+          in: query
+          description: Categoría de los productos a filtrar
+          required: false
+          schema:
+            type: string
+        - name: id
+          in: query
+          description: ID específico del producto a buscar
+          required: false
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Lista de productos obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      productsPagination:
+                        type: object
+                        properties:
+                          docs:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                _id:
+                                  type: integer
+                                title:
+                                  type: string
+                                description:
+                                  type: string
+                                code:
+                                  type: string
+                                price:
+                                  type: number
+                                status:
+                                  type: boolean
+                                category:
+                                  type: string
+                                thumbnail:
+                                  type: array
+                                  items:
+                                    type: string
+                                stock:
+                                  type: integer
+                                owner:
+                                  type: string
+                                __v:
+                                  type: integer
+                                id:
+                                  type: string
+                          totalDocs:
+                            type: integer
+                          limit:
+                            type: integer
+                          totalPages:
+                            type: integer
+                          page:
+                            type: integer
+                          pagingCounter:
+                            type: integer
+                          hasPrevPage:
+                            type: boolean
+                          hasNextPage:
+                            type: boolean
+                          prevPage:
+                            type: null
+                          nextPage:
+                            type: integer
+                          prevLink:
+                            type: null
+                          nextLink:
+                            type: string
+                          isValid:
+                            type: boolean
+                  examples:
+                    success:
+                      value:
+                        status: 200
+                        statusMessage: "SUCCESS"
+                        data:
+                          productsPagination:
+                            docs:
+                              - _id: 4
+                                title: "Producto 4"
+                                description: "creado 4"
+                                code: "# prueba ID 4"
+                                price: 1500
+                                status: true
+                                category: "notebooks"
+                                thumbnail:
+                                  - "creado "
+                                  - "creado  2"
+                                stock: 997
+                                owner: "ADMIN"
+                                __v: 0
+                                id: "4"
+                              - _id: 5
+                                title: "Producto 5"
+                                description: "creado 5"
+                                code: "# prueba ID 5"
+                                price: 1500
+                                status: true
+                                category: "notebooks"
+                                thumbnail:
+                                  - "creado "
+                                  - "creado  2"
+                                stock: 1000
+                                owner: "ADMIN"
+                                __v: 0
+                                id: "5"
+                            totalDocs: 10
+                            limit: 5
+                            totalPages: 2
+                            page: 1
+                            pagingCounter: 1
+                            hasPrevPage: false
+                            hasNextPage: true
+                            prevPage: null
+                            nextPage: 2
+                            prevLink: null
+                            nextLink: "http://localhost:8080/api/products/?page=2&limit=5&sort=&category=&id="
+                            isValid: true
+        "404":
+          description: Error al procesar la petición GET
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                invalidParams:
+                  value:
+                    status: 404
+                    statusMessage: "INVALID PARAMS ERROR - No se pudo obtener products en la base de datos"
+                    data:
+                      error: "No se pudo obtener products en la base de datos"
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    statusMessage: "DError del servidor"
+                    data:
+                      error: "ReferenceError: Error del servidor"
+    post:
+      tags:
+        - Products
+      summary: Crear un nuevo producto
+      description: Crea un nuevo producto con los parámetros especificados, debe ser un user con permisos "ADMIN" o "PREMIUM".
+      operationId: createProduct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Título del producto
+                description:
+                  type: string
+                  description: Descripción del producto
+                code:
+                  type: string
+                  description: Código del producto
+                price:
+                  type: number
+                  description: Precio del producto
+                status:
+                  type: boolean
+                  description: Estado del producto (activo/inactivo)
+                category:
+                  type: string
+                  description: Categoría del producto
+                thumbnail:
+                  type: array
+                  items:
+                    type: string
+                  description: Imágenes en miniatura del producto (opcional)
+                stock:
+                  type: integer
+                  description: Cantidad en stock del producto
+              required:
+                - title
+                - description
+                - code
+                - price
+                - status
+                - category
+                - stock
+      responses:
+        "201":
+          description: Producto creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Products"
+        "400":
+          description: Error de validación
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: array
+                        description: Lista de campos incompletos en el producto
+                        items:
+                          type: string
+              examples:
+                validationError:
+                  value:
+                    status: 400
+                    statusMessage: "VALIDATION ERROR"
+                    data:
+                      error: ["Campos incompletos en el producto"]
+
+        "404":
+          description: Error al procesar la petición POST
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                codeExists:
+                  value:
+                    status: 404
+                    statusMessage: "DB ERROR - Error al procesar la petición POST"
+                    data:
+                      error: "Error: productManager: El codigo producto ya existe en la base de datos, asigne un codigo nuevo"
+                referenceError:
+                  value:
+                    status: 404
+                    statusMessage: "DB ERROR - Error al procesar la petición POST"
+                    data:
+                      error: "ReferenceError: addProduct is not defined"
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    statusMessage: "DError del servidor"
+                    data:
+                      error: "ReferenceError: Error del servidor"
+  
+
+components:
+  schemas:
+    Products:
+      type: object
+      properties:
+        _id:
+          type: integer
+          description: ID del producto
+        title:
+          type: string
+          description: Título del producto
+        description:
+          type: string
+          description: Descripción del producto
+        code:
+          type: string
+          description: Código del producto
+        price:
+          type: number
+          description: Precio del producto
+        status:
+          type: boolean
+          description: Estado del producto
+        category:
+          type: string
+          description: Categoría del producto
+        thumbnail:
+          type: array
+          description: Imagenes del producto
+          items:
+            type: string
+        stock:
+          type: integer
+          description: Stock del producto
+        owner:
+          type: string
+          description: ID del propietario del producto
+        __v:
+          type: integer
+          description: Versión del documento en la base de datos

@@ -1,0 +1,134 @@
+[
+	{
+		"title": "Producto 1",
+		"description": "creado 1",
+		"code": "# prueba ID 1",
+		"price": 150,
+		"status": true,
+		"category": "notebooks",
+		"thumbnail": [
+			"creado ",
+			"creado  2"
+		],
+		"stock": 9,
+		"owner": "77939a43-39db-4005-8ccf-cbf722f12445",
+		"_id": 1
+	},
+	{
+		"title": "Producto 2",
+		"description": "creado 2",
+		"code": "# prueba ID 2",
+		"price": 150,
+		"status": true,
+		"category": "notebooks",
+		"thumbnail": [
+			"creado ",
+			"creado  2"
+		],
+		"stock": 0,
+		"owner": "77939a43-39db-4005-8ccf-cbf722f12445",
+		"_id": 2
+	},
+	{
+		"title": "Producto 3",
+		"description": "creado 3",
+		"code": "# prueba ID 3",
+		"price": 150,
+		"status": true,
+		"category": "notebooks",
+		"thumbnail": [
+			"creado ",
+			"creado  2"
+		],
+		"stock": 93,
+		"owner": "77939a43-39db-4005-8ccf-cbf722f12445",
+		"_id": 3
+	},
+	{
+		"title": "Producto 4",
+		"description": "creado 4",
+		"code": "# prueba ID 4",
+		"price": 1500,
+		"status": true,
+		"category": "notebooks",
+		"thumbnail": [
+			"creado ",
+			"creado  2"
+		],
+		"stock": 0,
+		"owner": "ADMIN",
+		"_id": 4
+	},
+	{
+		"title": "Producto 5",
+		"description": "creado 5",
+		"code": "# prueba ID 5",
+		"price": 1500,
+		"status": true,
+		"category": "notebooks",
+		"thumbnail": [
+			"creado ",
+			"creado  2"
+		],
+		"stock": 993,
+		"owner": "ADMIN",
+		"_id": 5
+	},
+	{
+		"title": "Producto 6",
+		"description": "creado 6",
+		"code": "# prueba ID 6",
+		"price": 1500,
+		"status": true,
+		"category": "notebooks",
+		"thumbnail": [],
+		"stock": 998,
+		"owner": "77939a43-39db-4005-8ccf-cbf722f12445",
+		"_id": 6
+	},
+	{
+		"title": "prueba patch 7",
+		"description": "modificado 7",
+		"code": "# prueba ID 7 ",
+		"price": 1500,
+		"status": true,
+		"category": "notebooks",
+		"thumbnail": [
+			"creado ",
+			"creado  2"
+		],
+		"stock": 100,
+		"owner": "6dd6c539-e751-490d-8f9b-62e4d4bafbba",
+		"_id": 7
+	},
+	{
+		"title": "Producto 8",
+		"description": "creado 8",
+		"code": "# prueba ID 8",
+		"price": 1500,
+		"status": true,
+		"category": "notebooks",
+		"thumbnail": [
+			"creado ",
+			"creado  2"
+		],
+		"stock": 999,
+		"owner": "6dd6c539-e751-490d-8f9b-62e4d4bafbba",
+		"_id": 8
+	},
+	{
+		"title": "Producto 9",
+		"description": "creado 9",
+		"code": "# prueba ID 9",
+		"price": 1500,
+		"status": true,
+		"category": "notebooks",
+		"thumbnail": [
+			"creado ",
+			"creado  2"
+		],
+		"stock": 1000,
+		"owner": "6dd6c539-e751-490d-8f9b-62e4d4bafbba",
+		"_id": 9
+	}
+]

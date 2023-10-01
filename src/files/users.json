@@ -1,0 +1,151 @@
+[
+  {
+    "_id": "b7cad96a-498d-4fc2-a38f-9f5ee122dfc7",
+    "email": "postaman@gmail.com",
+    "password": "$2b$10$UA9baU7BfJaaFiCezt64muUesm/GL69wXdg8Z6W3BumKzPFOPBQCK",
+    "first_name": "Nicolas",
+    "last_name": "Postamn",
+    "age": 37,
+    "role": "USER",
+    "cart": "2be9191b-52cb-4c00-beb5-e0bbdcdcf62a",
+    "documents": []
+  },
+  {
+    "_id": "1b206f27-78f2-4f59-9756-a7e8cdabb1a4",
+    "email": "nfrugoni31@gmail.com",
+    "first_name": "Nicolas",
+    "last_name": "GITHUB",
+    "age": 19,
+    "role": "USER",
+    "cart": "b68d6273-fb64-4065-bfba-f4f6c3cd793d",
+    "documents": [],
+    "last_connection": "2023-10-01T14:31:02.595Z"
+  },
+  {
+    "_id": "ddc015a5-121f-4e96-bde0-49053c666aaf",
+    "email": "cv.ingenierialinux@gmail.com",
+    "first_name": "cvingenieria",
+    "last_name": "GITHUB",
+    "age": 19,
+    "role": "USER",
+    "cart": "3a5cdce2-dfce-4299-891b-dac53fcff042",
+    "documents": []
+  },
+  {
+    "_id": "77939a43-39db-4005-8ccf-cbf722f12445",
+    "email": "pruebaUno@gmail.com",
+    "password": "$2b$10$9i2cCmyHx/DwKWD8eFFOM.Xcunol6i17E1Sdev0mTPWQinbQr/SbK",
+    "first_name": "prueba",
+    "last_name": "uno",
+    "age": "50",
+    "role": "PREMIUM",
+    "cart": "48fed766-6593-4b25-9ec9-28401a5c09df",
+    "documents": []
+  },
+  {
+    "_id": "dedc586d-f816-4992-8225-516be07ba18a",
+    "email": "userAdmin@gmail.com",
+    "password": "$2b$10$UDuZotb3FrqB2siuyEkSwOUSMTc5OnxYWFkisaFAcBNXeTvJrVGc.",
+    "first_name": "user",
+    "last_name": "Admin",
+    "age": "50",
+    "role": "ADMIN",
+    "cart": "41cb016d-2acc-40d5-a29d-888569bb3767",
+    "documents": []
+  },
+  {
+    "_id": "48d8d284-0fe4-469b-9d22-03ed8a7f9522",
+    "email": "adminCoder@coder.com",
+    "password": "$2b$10$VCVqLg5H0PlMyRdXS8kP5OhNL5NwiMjB9sQiAB4pKzFF1ZpLgx1jm",
+    "first_name": "Administrador",
+    "last_name": "Coder",
+    "age": "50",
+    "role": "ADMIN",
+    "cart": "76513f96-81ee-4aa9-98a3-9a5b7ca2a878",
+    "documents": [],
+    "last_connection": "2023-10-01T14:27:13.177Z"
+  },
+  {
+    "_id": "42c07e3e-5be3-4903-9a0b-afe10e3e869c",
+    "email": "publicCoder@coder.com",
+    "password": "$2b$10$FtLENe/9MHqQFzyu7twBHuqk6O.Op3DElvLi667/dGC3NSYNVUBLi",
+    "first_name": "Publico",
+    "last_name": "Coder",
+    "age": "50",
+    "role": "PREMIUM",
+    "cart": "3d47dff1-90ac-4555-b9ab-31e018c1b862",
+    "documents": []
+  },
+  {
+    "_id": "896deb51-04cc-4499-8cac-922ae3f3402c",
+    "email": "nicof_31@hotmail.com",
+    "password": "$2b$10$pcPkjH88GvjsxYG4VKiao.fjdCE7ggnQGXKsowSHDQFudGPhQcM7W",
+    "first_name": "Nicolas",
+    "last_name": "Frugoni",
+    "age": "37",
+    "role": "USER",
+    "cart": "e835a1a5-d9fc-4c11-9038-50f8d62d3365",
+    "documents": []
+  },
+  {
+    "_id": "6dd6c539-e751-490d-8f9b-62e4d4bafbba",
+    "email": "coderPremium@gmail.com",
+    "password": "$2b$10$0TdVMBYWhiVz9lOWnIcdD.yAuE0fdQx4lJXAdZV7h.Cwh0H1OIKAW",
+    "first_name": "Premium",
+    "last_name": "Premium",
+    "age": 37,
+    "role": "PREMIUM",
+    "cart": "1f45a121-b069-4aa9-ab5e-01d9d5641fe1",
+    "documents": [],
+    "last_connection": "2023-10-01T14:27:15.533Z"
+  },
+  {
+    "_id": "2583c06d-443c-4990-8f64-af6eb8e76e48",
+    "email": "cv.tec.gestya01@gmail.com",
+    "password": "$2b$10$iH7CjzLMoRSxsJyOLzaeluodP2H0vX5SRINhLCXmq4LssQfPp0VKy",
+    "first_name": "Nicolas",
+    "last_name": "Tecnica",
+    "age": "37",
+    "role": "USER",
+    "cart": "fb44d7c7-8ff2-4a6f-93fe-2c48cf7c5088",
+    "documents": [],
+    "last_connection": "2023-10-01T14:26:40.475Z"
+  },
+  {
+    "_id": "968da51a-172a-41ad-8cb3-63378cae2419",
+    "email": "userCoder@coder.com",
+    "password": "$2b$10$gTcfAVNbCMGRRI4zFb63qeFSnIA6aG2k2rkymH5JeVunCbosC0Q82",
+    "first_name": "User",
+    "last_name": "Coder",
+    "age": 37,
+    "role": "USER",
+    "cart": "06e5c075-f773-4cd4-9959-d7300be20090",
+    "documents": [
+      {
+        "name": "productImage",
+        "reference": "1696171689551-producto.jpg"
+      },
+      {
+        "name": "profileImage",
+        "reference": "1696171725947-perfil.jpg"
+      },
+      {
+        "name": "document",
+        "reference": "1696171733390-BienvenidoEcommerceOnline.pdf"
+      },
+      {
+        "name": "documentIdentificacion",
+        "reference": "1696171743733-identificacion.jpg"
+      },
+      {
+        "name": "documentDomicilio",
+        "reference": "1696171756119-domicilio.jpg"
+      },
+      {
+        "name": "documentEstadodecuenta",
+        "reference": "1696172077771-estadodecuenta.jpg"
+      }
+    ],
+    "last_connection": "2023-10-01T14:45:02.493Z"
+  }
+]

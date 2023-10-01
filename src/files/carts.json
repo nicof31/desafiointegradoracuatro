@@ -1,0 +1,103 @@
+[
+  {
+    "_id": "2be9191b-52cb-4c00-beb5-e0bbdcdcf62a",
+    "products": [
+      {
+        "producto": 2,
+        "quantity": 0,
+        "stock": 0,
+        "price": 150,
+        "totalPrice": 0,
+        "title": "Producto 2",
+        "description": "creado 2",
+        "code": "# prueba ID 2",
+        "_id": "dfd67ee4-48ed-4862-8af4-dfd75614c1a6"
+      },
+      {
+        "producto": 4,
+        "quantity": 0,
+        "stock": 0,
+        "price": 1500,
+        "totalPrice": 0,
+        "title": "Producto 4",
+        "description": "creado 4",
+        "code": "# prueba ID 4",
+        "_id": "e54fd18a-bf2e-4d19-867d-00a0baa58414"
+      }
+    ],
+    "user": "b7cad96a-498d-4fc2-a38f-9f5ee122dfc7",
+    "totalCartPrice": 3150
+  },
+  {
+    "_id": "b68d6273-fb64-4065-bfba-f4f6c3cd793d",
+    "products": [],
+    "totalCartPrice": 0,
+    "user": "1b206f27-78f2-4f59-9756-a7e8cdabb1a4"
+  },
+  {
+    "_id": "3a5cdce2-dfce-4299-891b-dac53fcff042",
+    "products": [],
+    "totalCartPrice": 0,
+    "user": "ddc015a5-121f-4e96-bde0-49053c666aaf"
+  },
+  {
+    "_id": "48fed766-6593-4b25-9ec9-28401a5c09df",
+    "products": [],
+    "totalCartPrice": 0,
+    "user": "77939a43-39db-4005-8ccf-cbf722f12445"
+  },
+  {
+    "_id": "41cb016d-2acc-40d5-a29d-888569bb3767",
+    "products": [],
+    "totalCartPrice": 0,
+    "user": "dedc586d-f816-4992-8225-516be07ba18a"
+  },
+  {
+    "_id": "eaffc179-8fc8-45c6-9478-720fceffde61",
+    "products": [],
+    "totalCartPrice": 100,
+    "user": "acd3c2de-1079-4e08-88b9-fa4b072e720d"
+  },
+  {
+    "_id": "76513f96-81ee-4aa9-98a3-9a5b7ca2a878",
+    "products": [],
+    "totalCartPrice": 0,
+    "user": "48d8d284-0fe4-469b-9d22-03ed8a7f9522"
+  },
+  {
+    "_id": "3d47dff1-90ac-4555-b9ab-31e018c1b862",
+    "products": [],
+    "totalCartPrice": 0,
+    "user": "42c07e3e-5be3-4903-9a0b-afe10e3e869c"
+  },
+  {
+    "_id": "e835a1a5-d9fc-4c11-9038-50f8d62d3365",
+    "products": [],
+    "totalCartPrice": 0,
+    "user": "896deb51-04cc-4499-8cac-922ae3f3402c"
+  },
+  {
+    "_id": "1f45a121-b069-4aa9-ab5e-01d9d5641fe1",
+    "products": [],
+    "totalCartPrice": 0,
+    "user": "6dd6c539-e751-490d-8f9b-62e4d4bafbba"
+  },
+  {
+    "_id": "349b12c7-44c4-49d5-9b75-ab3f25e5dccd",
+    "products": [],
+    "totalCartPrice": 0,
+    "user": "b0b23d32-e3ac-4923-8cfc-30c62ca7b8b9"
+  },
+  {
+    "_id": "fb44d7c7-8ff2-4a6f-93fe-2c48cf7c5088",
+    "products": [],
+    "totalCartPrice": 0,
+    "user": "2583c06d-443c-4990-8f64-af6eb8e76e48"
+  },
+  {
+    "_id": "06e5c075-f773-4cd4-9959-d7300be20090",
+    "products": [],
+    "totalCartPrice": 0,
+    "user": "968da51a-172a-41ad-8cb3-63378cae2419"
+  }
+]

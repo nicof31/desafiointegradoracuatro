@@ -1,0 +1,108 @@
+paths:
+  /api/sms/send:
+    post:
+      tags:
+        - SMS
+      summary: Enviar un mensaje SMS
+      description: Envía un mensaje SMS a un destinatario.
+      operationId: sendSMS
+      security:
+        - adminAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/smsSend"
+      responses:
+        "200":
+          description: Mensaje SMS enviado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: string
+                    description: Mensaje de éxito
+              examples:
+                success:
+                  value:
+                    status: 200
+                    statusMessage: "SUCCESS"
+                    data: "sms send to +543424866854"
+        "404":
+          description: Error al procesar la petición POST
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                dbError:
+                  value:
+                    status: 404
+                    statusMessage: "DB ERROR - Error al procesar la petición POST"
+                    data:
+                      error: "TypeError: Cannot read properties of undefined (reading 'body')"
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    statusMessage: "DError del servidor"
+                    data:
+                      error: "ReferenceError: Error del servidor"
+
+components:
+  schemas:
+    smsSend:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Nombre del destinatario del mensaje SMS.
+          minLength: 1
+        phone:
+          type: string
+          description: Número de teléfono al que se enviará el mensaje SMS.
+          minLength: 1
+      required:
+        - name
+        - phone

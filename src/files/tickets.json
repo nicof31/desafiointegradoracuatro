@@ -1,0 +1,20 @@
+[
+  {
+    "amount": 6150,
+    "purchaser": "postaman@gmail.com",
+    "code": "6c71ef70-5f9d-4d62-b6fd-c0c8ce8542b9",
+    "purchase_datetime": "2023-08-13T21:19:21.561Z"
+  },
+  {
+    "amount": 3150,
+    "purchaser": "postaman@gmail.com",
+    "code": "9a79cfb8-a116-48e2-ba6b-0662de84923f",
+    "purchase_datetime": "2023-08-13T21:29:57.983Z"
+  },
+  {
+    "amount": 100,
+    "purchaser": "userCoder@coder.com",
+    "code": "f3048484-a4bb-4bab-9ba3-181fc5398c76",
+    "purchase_datetime": "2023-08-15T11:48:33.252Z"
+  }
+]

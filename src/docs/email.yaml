@@ -1,0 +1,101 @@
+paths:
+  /api/email/send:
+    post:
+      tags:
+        - Email
+      summary: Enviar correo electrónico (ADMIN)
+      description: Permite a un usuario con el rol ADMIN enviar un correo electrónico.
+      operationId: sendEmail
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/emailSend"
+      responses:
+        "200":
+          description: Correo electrónico enviado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: string
+                    description: Mensaje de éxito
+              examples:
+                emailSuccess:
+                  value:
+                    status: 200
+                    statusMessage: "SUCCESS"
+                    data: "email send to cv.tec.gestya01@gmail.com"
+        "404":
+          description: Error al procesar la petición POST
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                codeExists:
+                  value:
+                    status: 404
+                    statusMessage: "DB ERROR - Error al procesar la petición POST"
+                    data:
+                      error: "ReferenceError: req is not defined"
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    statusMessage: "DError del servidor"
+                    data:
+                      error: "ReferenceError: Error del servidor"
+
+components:
+  schemas:
+    emailSend:
+      type: object
+      properties:
+        email:
+          type: string
+          description: Dirección de correo electrónico a la que se enviará el correo.
+          format: email
+      required:
+        - email

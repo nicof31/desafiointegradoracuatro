@@ -1,0 +1,903 @@
+paths:
+  /api/session/register:
+    post:
+      tags:
+        - Session
+      summary: Registro de usuario
+      description: Registra un nuevo usuario en el sistema.
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRegister"
+      responses:
+        "200":
+          description: Registro exitoso
+          headers:
+            Location:
+              description: URL de redirección después del registro exitoso
+              schema:
+                type: string
+          content:
+            text/html:
+              schema:
+                type: string
+              examples:
+                registrationSuccess:
+                  value: "Renderizado con Handlebars y redirige a http://localhost:8080/login"
+        "404":
+          description: Registro no válido
+          content:
+            text/html:
+              schema:
+                type: string
+              examples:
+                invalidParams:
+                  value: "Renderizado con Handlebars a una vista de error: INVALID_PARAMS: El correo electrónico ya está registrado"
+                databaseError:
+                  value: "Renderizado con Handlebars a una vista de error: DATABASE_ERROR: Ocurrió un error en el registro de usuario"
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    statusMessage: "Error del servidor"
+                    data:
+                      error: "Ocurrió un error interno en el servidor"
+
+  /api/session/recover-psw:
+    post:
+      tags:
+        - Session
+      summary: Recuperación de contraseña
+      description: Cambia la contraseña del usuario y la guarda en la base de datos.
+      operationId: recoverPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRecover"
+      responses:
+        "200":
+          description: Recuperación de contraseña exitosa
+          content:
+            text/html:
+              schema:
+                type: string
+              examples:
+                recoverySuccess:
+                  value: "Renderizado con Handlebars y redirige a http://localhost:8080/login"
+        "404":
+          description: Recuperación de contraseña no válida
+          content:
+            text/html:
+              schema:
+                type: string
+              examples:
+                invalidParams:
+                  value: "Renderizado con Handlebars a una vista de error: INVALID_PARAMS: La nueva contraseña debe ser diferente a la anterior"
+                databaseError:
+                  value: "Renderizado con Handlebars a una vista de error: DATABASE_ERROR: Ocurrió un error en cambio de contraseña"
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    statusMessage: "Error del servidor"
+                    data:
+                      error: "Ocurrió un error interno en el servidor"
+
+  /api/session/emailrecover:
+    post:
+      tags:
+        - Session
+      summary: Solicitar recuperación de contraseña por correo electrónico
+      description: Solicita la recuperación de contraseña por correo electrónico y envía un enlace para restablecer la contraseña al usuario.
+      operationId: emailRecoverPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserMailRecover"
+      responses:
+        "200":
+          description: Solicitud de recuperación de contraseña exitosa
+          headers:
+            Location:
+              description: URL de redirección después de la solicitud exitosa
+              schema:
+                type: string
+          content:
+            text/html:
+              schema:
+                type: string
+              examples:
+                recoverySuccess:
+                  value: "Renderizado con Handlebars y redirige a http://localhost:8080/login"
+        "404":
+          description: Solicitud de recuperación de contraseña no válida
+          content:
+            text/html:
+              schema:
+                type: string
+              examples:
+                invalidParams:
+                  value: "Renderizado con Handlebars a una vista de error: INVALID_PARAMS: El correo electrónico proporcionado no existe registrado en la Base de Datos"
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    statusMessage: "Error del servidor"
+                    data:
+                      error: "Ocurrió un error interno en el servidor"
+
+  /api/session/login:
+    post:
+      tags:
+        - Session
+      summary: Iniciar sesión
+      description: Inicia sesión con las credenciales proporcionadas.
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserLogin"
+      responses:
+        "200":
+          description: Inicio de sesión exitoso
+          headers:
+            Location:
+              description: URL de redirección después del inicio de sesión exitoso
+              schema:
+                type: string
+          content:
+            text/html:
+              schema:
+                type: string
+              examples:
+                loginSuccess:
+                  value: "Renderizado con Handlebars y redirige a http://localhost:8080/products"
+        "401":
+          description: Inicio de sesión no autorizado
+          content:
+            text/html:
+              schema:
+                type: string
+              examples:
+                unauthorized:
+                  value: "Renderizado con Handlebars en una vista de error: Unauthorized Credenciales inválidas"
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    statusMessage: "Error del servidor"
+                    data:
+                      error: "Ocurrió un error interno en el servidor"
+
+/api/session/logout:
+    get:
+      tags:
+        - Session
+      summary: Cerrar sesión
+      description: Cierra la sesión del usuario y limpia los datos de la cookie de sesión.
+      operationId: logoutUser
+      responses:
+        "200":
+          description: Sesión cerrada exitosamente
+          headers:
+            Location:
+              description: URL de redirección después de cerrar sesión exitosamente
+              schema:
+                type: string
+          content:
+            text/html:
+              schema:
+                type: string
+              examples:
+                logoutSuccess:
+                  value: "Renderizado con Handlebars y redirige a http://localhost:8080/login"
+        "404":
+          description: Error al cerrar sesión
+          content:
+            text/html:
+              schema:
+                type: string
+              examples:
+                controllerError:
+                  value: "Renderizado con Handlebars en una vista de error: CONTROLLER_ERROR Error al cerrar sesión"
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    statusMessage: "Error del servidor"
+                    data:
+                      error: "Ocurrió un error interno en el servidor"
+
+/api/session/current:
+    get:
+      tags:
+        - Session
+      summary: Obtener información del usuario actual
+      description: Obtiene información del usuario actual a partir del token de sesión. Los role de usario deben ser "USER" o "ADMIN"
+      operationId: getCurrentUserInfo
+      responses:
+        "200":
+          description: Información del usuario actual obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/userCurrent"
+              examples:
+                userInfo:
+                  value:
+                    user:
+                      first_name: 'Usuario'
+                      last_name: 'Coder'
+                      email: 'userCoder@coder.com'
+                      role: 'USER'
+                      id: '64dab5f0c45a31639586fbca'
+                    iat: 1694476330
+                    exp: 1694479030
+        "404":
+          description: Error al obtener la información del usuario actual
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                dbError:
+                  value:
+                    status: 404
+                    statusMessage: "DB ERROR - No se puede obtener la información del usuario actual"
+                    data:
+                      error: "ReferenceError: userInfo is not defined"
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    statusMessage: "Error del servidor"
+                    data:
+                      error: "Ocurrió un error interno en el servidor"
+
+/api/session/tickets:
+    get:
+      tags:
+        - Session
+      summary: Obtener tickets de usuario
+      description: Obtiene los tickets de compra realizados por el usuario. Los role de usario deben ser "USER" o "ADMIN"
+      operationId: getUserTickets
+      responses:
+        "200":
+          description: Tickets obtenidos con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      tickets:
+                        type: array
+                        description: Lista de tickets de usuario
+                        items:
+                          $ref: "#/components/schemas/userTickets"
+        "404":
+          description: No se pueden obtener los tickets
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                notFound:
+                  value:
+                    status: 404
+                    statusMessage: " No se puede obtener la información de los tickets "
+                    data:
+                      error: "Tickets no encontrados"
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    statusMessage: "DError del servidor"
+                    data:
+                      error: "ReferenceError: Error del servidor"
+
+/api/session/premium/{uid}:
+    get:
+      tags:
+        - Session
+      summary: Obtener datos de usuario premium
+      description: Obtiene los datos de un usuario con rol "USER", "ADMIN" o "PREMIUM" por su uid.
+      operationId: getUserByUid
+      parameters:
+        - name: uid
+          in: path
+          description: ID único del usuario
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Datos del usuario obtenidos con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      resultFind:
+                        $ref: "#/components/schemas/userData"
+        "404":
+          description: No se pueden obtener los datos del usuario
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                notFound:
+                  value:
+                    status: 404
+                    statusMessage: " No se pudo obtener los datos del User en la base de datos:"
+                    data:
+                      error: "INVALID_PARAMS"
+                notExists:
+                  value:
+                    status: 404
+                    statusMessage: "INVALID PARAMS ERROR -No se pudo obtener los datos del User en la base de datos:"
+                    data:
+                      error: "Error: User not exists."
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    statusMessage: "DError del servidor"
+                    data:
+                      error: "ReferenceError: Error del servidor"
+    post:
+      tags:
+        - Session
+      summary: Cambiar el rol del usuario a "PREMIUM"
+      description: Cambia el rol de un usuario con los roles "USER", "ADMIN" o "PREMIUM" por su uid.
+      operationId: changeUserRole
+      parameters:
+        - name: uid
+          in: path
+          description: ID único del usuario
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Rol de usuario cambiado con éxito a "PREMIUM"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      resultChange:
+                        $ref: "#/components/schemas/userRole"
+        "404":
+          description: No se puede procesar el cambio de rol
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                notProcessed:
+                  value:
+                    status: 404
+                    statusMessage: " No se pudo procesar el cambio de Role:"
+                    data:
+                      error: "INVALID_PARAMS"
+                notExists:
+                  value:
+                    status: 404
+                    statusMessage: "INVALID PARAMS ERROR - No se pudo procesar el cambio de Role:"
+                    data:
+                      error: "Error: User not exists."
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    statusMessage: "DError del servidor"
+                    data:
+                      error: "ReferenceError: Error del servidor"
+
+/api/session/github:
+    get:
+      tags:
+        - Session
+      summary: Iniciar sesión con GitHub
+      description: Inicia sesión utilizando las credenciales de GitHub.
+      operationId: loginWithGitHub
+      parameters:
+        - name: username_or_email
+          in: query
+          description: Nombre de usuario o dirección de correo electrónico de GitHub
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: Contraseña de GitHub
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Inicio de sesión exitoso
+          content:
+            text/html:
+              schema:
+                type: string
+              examples:
+                loginSuccess:
+                  value: "Renderizado con Handlebars y redirige a http://localhost:8080/products"
+        "401":
+          description: Error de inicio de sesión
+          content:
+            text/html:
+              schema:
+                type: string
+              examples:
+                githubLoginError:
+                  value: "Renderizado con Handlebars en una vista de error: Error en el enrutamiento de GitHub callback y te redirige a http://localhost:8080/login"
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    statusMessage: "DError del servidor"
+                    data:
+                      error: "ReferenceError: Error del servidor"
+
+/api/session/github/callback:
+    get:
+      tags:
+        - Session
+      summary: Iniciar sesión con GitHub
+      description: Inicia sesión utilizando las credenciales de GitHub.
+      operationId: loginWithGitHub
+      parameters:
+        - name: username_or_email
+          in: query
+          description: Nombre de usuario o dirección de correo electrónico de GitHub
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: Contraseña de GitHub
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Inicio de sesión exitoso
+          content:
+            text/html:
+              schema:
+                type: string
+              examples:
+                loginSuccess:
+                  value: "Renderizado con Handlebars y redirige a http://localhost:8080/products"
+        "401":
+          description: Error de inicio de sesión
+          content:
+            text/html:
+              schema:
+                type: string
+              examples:
+                githubLoginError:
+                  value: "Renderizado con Handlebars en una vista de error: Error en el enrutamiento de GitHub callback y te redirige a http://localhost:8080/login"
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    statusMessage: "DError del servidor"
+                    data:
+                      error: "ReferenceError: Error del servidor"
+
+components:
+  schemas:
+    UserRegister:
+      type: object
+      properties:
+        first_name:
+          type: string
+          description: Nombre del usuario
+          minLength: 1
+        last_name:
+          type: string
+          description: Apellido del usuario
+          minLength: 1
+        email:
+          type: string
+          description: Correo electrónico del usuario
+          format: email
+        age:
+          type: integer
+          description: Edad del usuario
+          minimum: 0
+        password:
+          type: string
+          description: Contraseña del usuario
+          minLength: 6
+        role:
+          type: string
+          description: Rol del usuario
+          enum:
+            - PUBLIC
+            - USER
+            - ADMIN
+            - PREMIUM
+    UserRecover:
+      type: object
+      properties:
+        email:
+          type: string
+          description: Correo electrónico del usuario
+          format: email
+        new_password:
+          type: string
+          description: Nueva contraseña del usuario
+          minLength: 6
+    UserMailRecover:
+      type: object
+      properties:
+        email:
+          type: string
+          description: Correo electrónico del usuario
+          format: email
+    UserLogin:
+      type: object
+      properties:
+        email:
+          type: string
+          description: Correo electrónico del usuario
+          format: email
+        password:
+          type: string
+          description: Contraseña del usuario
+    userTickets:
+          type: object
+          properties:
+            _id:
+              type: string
+              description: ID del ticket
+            code:
+              type: string
+              description: Código del ticket
+            amount:
+              type: integer
+              description: Monto del ticket
+            purchaser:
+              type: string
+              description: Correo electrónico del comprador
+            purchase_datetime:
+              type: string
+              format: date-time
+              description: Fecha y hora de compra del ticket
+            __v:
+              type: integer
+              description: Versión del documento
+    userRole:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: ID único del usuario
+        first_name:
+          type: string
+          description: Nombre del usuario
+        last_name:
+          type: string
+          description: Apellido del usuario
+        email:
+          type: string
+          description: Correo electrónico del usuario
+          format: email
+        age:
+          type: integer
+          description: Edad del usuario
+        role:
+          type: string
+          description: Rol del usuario
+        cart:
+          type: string
+          description: ID único del carrito de compras del usuario
+      required:
+        - _id
+        - first_name
+        - last_name
+        - email
+        - age
+        - role

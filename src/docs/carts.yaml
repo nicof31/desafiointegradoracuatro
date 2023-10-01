@@ -1,0 +1,907 @@
+paths:
+  /api/carts/:
+    get:
+      tags:
+        - Carts
+      summary: Obtiene todos los carritos
+      description: Retorna una lista de todos los carritos en la base de datos, con un límite opcional
+      operationId: getAllCarts
+      parameters:
+        - name: limit
+          in: query
+          description: Límite de resultados (opcional)
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: La lista de carritos se entregó exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CartGetAll"
+        "404":
+          description: No se pudo obtener los carritos en la base de datos
+        "500":
+          description: Error del servidor
+
+  /api/carts/{cartId}:
+    get:
+      tags:
+        - Carts
+      summary: Obtiene el carrito que posee el CID
+      description: Retorna los datos del carrito buscado, la respuesta esta renderizada con Handlebars
+      operationId: getCartById
+      parameters:
+        - name: cartId
+          in: path
+          description: ID del carrito a buscar, Id para prueba de acuerdo al user logueado , como la respuesta esta renderizada pegar el link del Request URL en otra pestaña del navegador para visualizar los datos
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+      responses:
+        "200":
+          description: El carrito se entregó exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Carts"
+        "404":
+          description: No se pudo encontrar el carrito en la base de datos / El id de carrito  buscado no existe, cargue un nuevo id
+        "500":
+          description: Error del servidor
+
+  /api/carts/{pid}:
+    post:
+      tags:
+        - Carts
+      summary: Agregar, aumentar o disminuir la cantidad de un producto en el carrito.
+      description: Aumenta o disminuye la cantidad de un producto en el carrito según la acción especificada (aumentar o disminuir). Cuando se envía la petición con la query Aumentar, en caso de que el producto no esté agregado en el carrito, se lo agregará y la cantidad será uno; a partir de aquí, cada vez que se seleccione aumentar se lo irá realizando en +1. Para el caso de los usuarios "PREMIUM", no les permitirá agregar los productos creados por sí mismos al carrito.
+      operationId: changeCartItemQuantity
+      parameters:
+        - name: pid
+          in: path
+          description: ID del producto en el carrito
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+        - name: accion
+          in: query
+          description: Acción a realizar (aumentar o disminuir)
+          required: true
+          schema:
+            type: string
+            enum: [aumentar, disminuir]
+      responses:
+        "201":
+          description: Cantidad aumentada/disminuida en el carrito
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChangeCartItemResponse"
+              examples:
+                aumentar:
+                  value:
+                    status: 201
+                    statusMessage: SUCCESS
+                    data:
+                      payload:
+                        status: success
+                        message: Cantidad aumentar en el carrito
+                disminuir:
+                  value:
+                    status: 201
+                    statusMessage: SUCCESS
+                    data:
+                      payload:
+                        status: success
+                        message: Cantidad disminuir en el carrito
+        "403":
+          description: Solo para usuarios "PREMIUM". No puedes agregar tu propio producto al carrito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              example:
+                status: 403
+                statusMessage: "FORBIDDEN ERROR - No puedes agregar tu propio producto al carrito"
+                data:
+                  error: "Error: No puedes agregar tu propio producto al carrito"
+        "404":
+          description: No se pudo encontrar el producto en el carrito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              example:
+                status: 404
+                statusMessage: "DB ERROR - Error al procesar la petición POST"
+                data:
+                  error: "ReferenceError: addCartQuan is not defined"
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de estado de la respuesta
+                  statusMessage:
+                    type: string
+                    description: Mensaje de estado de la respuesta
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensaje de error específico
+              example:
+                status: 500
+                statusMessage: "DError del servidor"
+                data:
+                  error: "ReferenceError: Error del servidor"
+
+/api/carts/{cid}/purchase:
+  post:
+    tags:
+      - Carts
+    summary: Procesa la compra de un carrito de compras
+    description: Procesa la compra del carrito de compras especificado por su CID, Id para prueba de acuerdo al user logueado . Verifica si hay suficiente stock para cada producto en el carrito y procesa la compra. Si hay productos que no se pudieron comprar debido a la falta de stock, se enumeran en "productsNotPurchased" con cantidad, stock, precio y precio total. Si todos los productos tenían suficiente stock, "productsNotPurchased" estará vacío.
+    operationId: processCartPurchase
+    parameters:
+      - name: cid
+        in: path
+        description: ID del carrito de compras
+        required: true
+        schema:
+          type: string
+          format: ObjectId
+    responses:
+      "200":
+        description: Compra procesada exitosamente
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PurchaseCartResponse"
+            examples:
+              productosSinStock:
+                value:
+                  status: 200
+                  statusMessage: SUCCESS
+                  data:
+                    payload:
+                      message: Algunos productos no pudieron ser procesados por falta de stock
+                      productsNotPurchased:
+                        - product: 10
+                          quantity: 0
+                          stock: 0
+                          price: 1500
+                          totalPrice: 0
+              compraExitosa:
+                value:
+                  status: 200
+                  statusMessage: SUCCESS
+                  data:
+                    payload:
+                      message: Compra realizada exitosamente
+                      productsNotPurchased: []
+      "404":
+        description: Error al procesar la petición POST
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: integer
+                  description: Código de estado de la respuesta
+                statusMessage:
+                  type: string
+                  description: Mensaje de estado de la respuesta
+                data:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      description: Mensaje de error específico
+            example:
+              status: 404
+              statusMessage: "DB ERROR - Error al procesar la petición POST"
+              data:
+                error: "ReferenceError: result is not defined"
+      "500":
+        description: Error del servidor
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: integer
+                  description: Código de estado de la respuesta
+                statusMessage:
+                  type: string
+                  description: Mensaje de estado de la respuesta
+                data:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      description: Mensaje de error específico
+            example:
+              status: 404
+              statusMessage: "DError del servidor"
+              data:
+                error: "ReferenceError: Error del servidor"
+
+/api/carts/{cid}/products/{pid}:
+  put:
+    tags:
+      - Carts
+    summary: Actualiza la cantidad de un producto en el carrito.
+    description: Actualiza la cantidad de un producto en el carrito según la acción especificada (aumentar o disminuir).
+    operationId: updateCartItemQuantity
+    parameters:
+      - name: cid
+        in: path
+        description: ID del carrito
+        required: true
+        schema:
+          type: string
+          format: ObjectId
+      - name: pid
+        in: path
+        description: ID del producto en el carrito
+        required: true
+        schema:
+          type: string
+          format: ObjectId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              quantity:
+                type: integer
+                minimum: 1
+            required:
+              - quantity
+    responses:
+      "200":
+        description: Cantidad actualizada en el carrito
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Carts"
+            examples:
+              success:
+                value:
+                  status: 200
+                  statusMessage: SUCCESS
+                  data:
+                    payload:
+                      _id: "64dab5f1c45a31639586fbcc"
+                      products:
+                        - product: 10
+                          quantity: 1
+                          stock: 1
+                          price: 1500
+                          totalPrice: 1500
+                          _id: "64fca49789c675016dbb5512"
+                      totalCartPrice: 1500
+                      user: "64dab5f0c45a31639586fbca"
+                      __v: 30
+      "404":
+        description: Error al procesar la petición PUT
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: integer
+                  description: Código de estado de la respuesta
+                statusMessage:
+                  type: string
+                  description: Mensaje de estado de la respuesta
+                data:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      description: Mensaje de error específico
+            examples:
+              cartNotFound:
+                value:
+                  status: 404
+                  statusMessage: "DB ERROR - Error al procesar la petición PUT"
+                  data:
+                    error: "Error: cartManager: El carrito _id: 64dab5f1c45a31639586fbc2 buscado no existe, cargue un nuevo id"
+              productNotFound:
+                value:
+                  status: 404
+                  statusMessage: "DB ERROR - Error al procesar la petición PUT"
+                  data:
+                    error: "Error: cartManager: El producto _id:'50' buscado no existe en cart _id:'64dab5f1c45a31639586fbcc', cargue un nuevo id de producto"
+              invalidQuantity:
+                value:
+                  status: 404
+                  statusMessage: "DB ERROR - Error al procesar la petición PUT"
+                  data:
+                    error: "Error: cartManager: La cantidad debe ser mayor que 0"
+              updateError:
+                value:
+                  status: 404
+                  statusMessage: "DB ERROR - Error al procesar la petición PUT"
+                  data:
+                    error: "ReferenceError: updateCart is not defined"
+              serverError:
+                value:
+                  status: 404
+                  statusMessage: "DB ERROR - Error al procesar la petición PUT"
+                  data:
+                    error: "ReferenceError: Error al procesar la petición PUT"
+      "500":
+        description: Error del servidor
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: integer
+                  description: Código de estado de la respuesta
+                statusMessage:
+                  type: string
+                  description: Mensaje de estado de la respuesta
+                data:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      description: Mensaje de error específico
+            examples:
+              serverError:
+                value:
+                  status: 500
+                  statusMessage: "DError del servidor"
+                  data:
+                    error: "ReferenceError: Error del servidor"
+  delete:
+    tags:
+      - Carts
+    summary: Elimina un producto del carrito.
+    description: Elimina un producto específico del carrito por su ID. Id para prueba de acuerdo al user logueado
+    operationId: deleteProductFromCart
+    parameters:
+      - name: cid
+        in: path
+        description: ID del carrito
+        required: true
+        schema:
+          type: string
+          format: ObjectId
+      - name: pid
+        in: path
+        description: ID del producto en el carrito
+        required: true
+        schema:
+          type: string
+          format: ObjectId
+    responses:
+      "200":
+        description: Producto eliminado del carrito exitosamente
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Carts"
+            examples:
+              success:
+                value:
+                  status: 200
+                  statusMessage: SUCCESS
+                  data:
+                    payload:
+                      "_id": "64d6918281b7b7f0b2d9369c"
+                      products:
+                        - product: 9
+                          quantity: 1
+                          stock: 997
+                          price: 1500
+                          totalPrice: 1500
+                          "_id": "64fcd55297aca3dd06ad8a5f"
+                        - product: 10
+                          quantity: 0
+                          stock: 0
+                          price: 1500
+                          totalPrice: 0
+                          "_id": "64fcd55797aca3dd06ad8a66"
+                      totalCartPrice: 1500
+                      user: "64d6918281b7b7f0b2d9369a"
+                      "__v": 35
+      "404":
+        description: Error al procesar la petición DELETE
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: integer
+                  description: Código de estado de la respuesta
+                statusMessage:
+                  type: string
+                  description: Mensaje de estado de la respuesta
+                data:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      description: Mensaje de error específico
+            examples:
+              cartNotFound:
+                value:
+                  status: 404
+                  statusMessage: "DB ERROR - Error al procesar la petición DELETE"
+                  data:
+                    error: "Error: cartManager: El carrito _id: 64dab5f1c45a31639586fbc2 buscado no existe, cargue un nuevo id"
+              productNotFound:
+                value:
+                  status: 404
+                  statusMessage: "DB ERROR - Error al procesar la petición DELETE"
+                  data:
+                    error: "Error: cartManager: El producto _id: 50 buscado no existe, cargue un nuevo id"
+      "500":
+        description: Error del servidor
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: integer
+                  description: Código de estado de la respuesta
+                statusMessage:
+                  type: string
+                  description: Mensaje de estado de la respuesta
+                data:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      description: Mensaje de error específico
+            examples:
+              serverError:
+                value:
+                  status: 500
+                  statusMessage: "Error del servidor"
+                  data:
+                    error: "ReferenceError: Error del servidor"
+
+
+/api/carts/{cid}:
+  put:
+    tags:
+      - Carts
+    summary: Actualiza los parámetros del carrito.
+    description: Actualiza los parámetros de uno o varios productos en el carrito. Id para prueba de acuerdo al user logueado
+    operationId: updateCartsComplet
+    parameters:
+      - name: cid
+        in: path
+        description: ID del carrito
+        required: true
+        schema:
+          type: string
+          format: ObjectId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                product:
+                  type: integer
+                  description: ID del producto
+                quantity:
+                  type: integer
+                  minimum: 1
+                  description: Cantidad del producto (mayor que 0)
+                stock:
+                  type: integer
+                  description: Stock del producto
+                price:
+                  type: number
+                  description: Precio unitario del producto
+                totalPrice:
+                  type: number
+                  description: Precio total de la cantidad del producto en el carrito
+              required:
+                - product
+                - quantity
+                - stock
+                - price
+                - totalPrice
+    responses:
+      "201":
+        description: Parámetros del carrito actualizados
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Carts"
+            examples:
+              success:
+                value:
+                  status: 201
+                  statusMessage: SUCCESS
+                  data:
+                    payload:
+                      _id: "64dab5f1c45a31639586fbcc"
+                      products:
+                        - product: 1
+                          quantity: 3
+                          price: 350
+                          totalPrice: 1050
+                          _id: "64fcc9889e0076b1651bae3d"
+                        - product: 2
+                          quantity: 3
+                          price: 350
+                          totalPrice: 700
+                          _id: "64fcc9889e0076b1651bae3e"
+                      totalCartPrice: 1750
+                      user: "64dab5f0c45a31639586fbca"
+                      __v: 30
+      "404":
+        description: Error al procesar la petición PUT
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: integer
+                  description: Código de estado de la respuesta
+                statusMessage:
+                  type: string
+                  description: Mensaje de estado de la respuesta
+                data:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      description: Mensaje de error específico
+            examples:
+              cartNotFound:
+                value:
+                  status: 404
+                  statusMessage: "DB ERROR - Error al procesar la petición PUT"
+                  data:
+                    error: "Error: cartManager: El carrito _id: 64dab5f1c45a31639586fbc2 buscado no existe, cargue un nuevo id"
+              updateError:
+                value:
+                  status: 404
+                  statusMessage: "DB ERROR - Error al procesar la petición PUT"
+                  data:
+                    error: "ReferenceError: updateCart is not defined"
+              serverError:
+                value:
+                  status: 404
+                  statusMessage: "DB ERROR - Error al procesar la petición PUT"
+                  data:
+                    error: "ReferenceError: Error al procesar la petición PUT"
+      "500":
+        description: Error del servidor
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: integer
+                  description: Código de estado de la respuesta
+                statusMessage:
+                  type: string
+                  description: Mensaje de estado de la respuesta
+                data:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      description: Mensaje de error específico
+            examples:
+              serverError:
+                value:
+                  status: 500
+                  statusMessage: "DError del servidor"
+                  data:
+                    error: "ReferenceError: Error del servidor"
+  delete:
+    tags:
+      - Carts
+    summary: Elimina todos los productos del carrito.
+    description: Elimina todos los productos del carrito y restablece el carrito a su estado inicial. Id para prueba de acuerdo al user logueado
+    operationId: deleteAllProductsInCart
+    parameters:
+      - name: cid
+        in: path
+        description: ID del carrito
+        required: true
+        schema:
+          type: string
+          format: ObjectId
+    responses:
+      "200":
+        description: Productos eliminados del carrito exitosamente
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Carts"
+            examples:
+              success:
+                value:
+                  status: 200
+                  statusMessage: SUCCESS
+                  data:
+                    payload:
+                      _id: "64d6918281b7b7f0b2d9369c"
+                      products: []
+                      totalCartPrice: 0
+                      user: "64d6918281b7b7f0b2d9369a"
+                      __v: 31
+      "404":
+        description: Error al procesar la petición DELETE
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: integer
+                  description: Código de estado de la respuesta
+                statusMessage:
+                  type: string
+                  description: Mensaje de estado de la respuesta
+                data:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      description: Mensaje de error específico
+            examples:
+              cartNotFound:
+                value:
+                  status: 404
+                  statusMessage: "DB ERROR - Error al procesar la petición DELETE"
+                  data:
+                    error: "Error: cartManager: El carrito _id: 64dab5f1c45a31639586fbc2 buscado no existe, cargue un nuevo id"
+      "500":
+        description: Error del servidor
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: integer
+                  description: Código de estado de la respuesta
+                statusMessage:
+                  type: string
+                  description: Mensaje de estado de la respuesta
+                data:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      description: Mensaje de error específico
+            examples:
+              serverError:
+                value:
+                  status: 500
+                  statusMessage: "Error del servidor"
+                  data:
+                    error: "ReferenceError: Error del servidor"
+
+components:
+  schemas:
+    CartGetAll:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: Código de estado de la respuesta
+        statusMessage:
+          type: string
+          description: Mensaje de estado de la respuesta
+        data:
+          type: object
+          properties:
+            carts:
+              type: array
+              description: Lista de carritos
+              items:
+                $ref: "#/components/schemas/Carts"
+
+    Carts:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: ID autogenerado
+        products:
+          type: array
+          description: Arreglo de los productos del carrito
+          items:
+            type: object
+            properties:
+              _id:
+                type: number
+                description: ID del producto
+              quantity:
+                type: number
+                description: Cantidad del producto
+              stock:
+                type: number
+                description: Stock del producto
+              price:
+                type: number
+                description: Precio unitario del producto
+              totalPrice:
+                type: number
+                description: Precio total de la cantidad del producto en el carrito
+      example:
+        _id: "64f3960667b0646988d42f9b"
+        products:
+          - _id: 2
+            quantity: 3
+            stock: 1000
+            price: 1500
+            totalPrice: 4500
+          - _id: 11
+            quantity: 1
+            stock: 1000
+            price: 1500
+            totalPrice: 1500
+        totalCartPrice: 6000
+        user: "64f3960667b0646988d42f99"
+        __v: 15
+
+    ChangeCartItemResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: Código de estado de la respuesta
+        statusMessage:
+          type: string
+          description: Mensaje de estado de la respuesta
+        data:
+          type: object
+          properties:
+            payload:
+              type: object
+              properties:
+                status:
+                  type: string
+                  description: Estado de la operación (success o error)
+                message:
+                  type: string
+                  description: Mensaje descriptivo de la operación
+
+    PurchaseCartResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: Código de estado de la respuesta
+        statusMessage:
+          type: string
+          description: Mensaje de estado de la respuesta
+        data:
+          type: object
+          properties:
+            payload:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: Mensaje descriptivo de la operación
+                productsNotPurchased:
+                  type: array
+                  description: Lista de productos que no se pudieron comprar debido a la falta de stock
+                  items:
+                    type: object
+                    properties:
+                      product:
+                        type: number
+                        description: ID del producto
+                      quantity:
+                        type: number
+                        description: Cantidad del producto
+                      stock:
+                        type: number
+                        description: Stock disponible del producto
+                      price:
+                        type: number
+                        description: Precio unitario del producto
+                      totalPrice:
+                        type: number
+                        description: Precio total del producto (cantidad * precio unitario)
+      example:
+        productosSinStock:
+          status: 200
+          statusMessage: SUCCESS
+          data:
+            payload:
+              message: Algunos productos no pudieron ser procesados por falta de stock
+              productsNotPurchased:
+                - product: 10
+                  quantity: 0
+                  stock: 0
+                  price: 1500
+                  totalPrice: 0
+      compraExitosa:
+          status: 200
+          statusMessage: SUCCESS
+          data:
+            payload:
+              message: Compra realizada exitosamente
+              productsNotPurchased: []
+
+    UpdateCartItem:
+      type: object
+      properties:
+        product:
+          type: integer
+          description: ID del producto
+        quantity:
+          type: integer
+          description: Cantidad del producto (mayor que 0)
+        stock:
+          type: integer
+          description: Stock del producto
+        price:
+          type: number
+          description: Precio unitario del producto
+        totalPrice:
+          type: number
+          description: Precio total de la cantidad del producto en el carrito
+
+    UpdateCartsComplet:
+      type: array
+      items:
+        $ref: "#/components/schemas/UpdateCartItem"
